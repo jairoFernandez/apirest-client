@@ -3,23 +3,23 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class IService<T> {
+export class IService {
   data: any;
   url: string;
+  loginRoute: string = "/api/login_check";
+  routeServer: string = "http://localhost:8000";
 
-  constructor(private http: Http, url: string) {
-    this.data = null;
-    this.url = url;
+  constructor(private http: Http) {
   }
 
-  get(){
-    return new Promise(resolve => {
-      this.http.get(this.url)
-      .map(res => res.json())
-      .subscribe(data => {
-        this.data = data.results;
-        resolve(this.data);
-      })
-    });
+  post(username: string, password: string) {
+    //var body = `_username=${username}&_password=${password}`;    
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    headers.append('Access-Control-Allow-Origin', '*');
+
+    return this.http.post(this.routeServer + this.loginRoute, { '_username': username, '_password': password }, headers)
+      .map(response => response.json());
+      
   }
 }
